@@ -1,0 +1,15 @@
+{
+    "$schema": "https://choria.io/schemas/mcorpc/external/v1/rpc_request.json",
+    "protocol": "io.choria.mcorpc.external.v1.rpc_request",
+    "agent": "helloworld",
+    "action": "ping",
+    "requestid": "034c527089f746248822ada8a145f499",
+    "senderid": "dev1.devco.net",
+    "callerid": "choria=rip.mcollective",
+    "collective": "mcollective",
+    "ttl": 60,
+    "msgtime": 1568281519,
+    "data": {
+        "msg": "hello"
+    }
+}

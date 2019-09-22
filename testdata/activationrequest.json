@@ -1,0 +1,5 @@
+{
+    "$schema": "https://choria.io/schemas/mcorpc/external/v1/activation_request.json",
+    "protocol": "io.choria.mcorpc.external.v1.activation_request",
+    "agent": "testing"
+}
