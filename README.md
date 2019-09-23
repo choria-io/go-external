@@ -12,6 +12,8 @@ Today this library can be used to build standalone agents that you compile and d
 
 It's a new library and a new feature in Choria, feedback and bug fixes appreciated.
 
+This is heavily inspired by the Python [py-mco-agent](https://github.com/optiz0r/py-mco-agent) written by Ben Roberts.
+
 ## Example
 
 We will write a basic agent called `parrot` that receives a message on its `echo` action and sends it back.
@@ -50,7 +52,7 @@ func main() {
 	agent := external.NewAgent("parrot")
 	defer agent.ProcessRequest()
 
-    // action will be invoked on demand
+	// action will be invoked on demand
 	agent.MustRegisterAction("echo", echoAction)
 }
 ```
@@ -80,9 +82,9 @@ func main() {
 	agent := external.NewAgent("parrot")
 	defer agent.ProcessRequest()
 
-    // shouldActivate will be called on agent startup
-    agent.RegisterActivator(shouldActivate)
-    agent.MustRegisterAction("echo", echoAction)
+	// shouldActivate will be called on agent startup
+	agent.RegisterActivator(shouldActivate)
+	agent.MustRegisterAction("echo", echoAction)
 }
 ```
 ### Configuration
