@@ -12,6 +12,8 @@ Today this library can be used to build standalone agents that you compile and d
 
 It's a new library and a new feature in Choria, feedback and bug fixes appreciated.
 
+This is heavily inspired by the Python [py-mco-agent](https://github.com/optiz0r/py-mco-agent) written by Ben Roberts.
+
 ## Example
 
 We will write a basic agent called `parrot` that receives a message on its `echo` action and sends it back.
