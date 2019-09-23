@@ -1,4 +1,4 @@
-## Golang External Agent Helper
+## Golang External Agent Helper
 
 This is a library that can help you write a [Choria External Agent](https://choria.io/docs/development/mcorpc/externalagents/) in Go.
 
