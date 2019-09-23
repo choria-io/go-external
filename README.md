@@ -50,7 +50,7 @@ func main() {
 	agent := external.NewAgent("parrot")
 	defer agent.ProcessRequest()
 
-    // action will be invoked on demand
+	// action will be invoked on demand
 	agent.MustRegisterAction("echo", echoAction)
 }
 ```
@@ -80,9 +80,9 @@ func main() {
 	agent := external.NewAgent("parrot")
 	defer agent.ProcessRequest()
 
-    // shouldActivate will be called on agent startup
-    agent.RegisterActivator(shouldActivate)
-    agent.MustRegisterAction("echo", echoAction)
+	// shouldActivate will be called on agent startup
+	agent.RegisterActivator(shouldActivate)
+	agent.MustRegisterAction("echo", echoAction)
 }
 ```
 ### Configuration
