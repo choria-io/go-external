@@ -32,19 +32,30 @@ func (r *rpc) panicIfError(err error, format string, a ...interface{}) {
 	}
 }
 
-func (r *rpc) failIfError(err error, format string, a ...interface{}) {
-	if err == nil {
-		return
-	}
-
+func (r *rpc) fail(format string, a ...interface{}) bool {
 	reply := &Reply{
 		Statuscode: Aborted,
 		Statusmsg:  fmt.Sprintf(format, a...),
 		Data:       make(map[string]interface{}),
 	}
 
-	err = r.publishReply(reply)
+	err := r.publishReply(reply)
 	r.panicIfError(err, "could not write reply: %s", err)
+
+	return true
+}
+
+func (r *rpc) failIfError(err error, format string, a ...interface{}) bool {
+	if err == nil {
+		return false
+	}
+
+	return r.fail(format, a...)
+}
+
+func (r *rpc) hasAction(action string) bool {
+	_, ok := r.actions[action]
+	return ok
 }
 
 func (r *rpc) handleRequest() error {
@@ -52,16 +63,25 @@ func (r *rpc) handleRequest() error {
 	reply := &Reply{}
 
 	jreq, err := ioutil.ReadFile(os.Getenv("CHORIA_EXTERNAL_REQUEST"))
-	r.failIfError(err, "could not read request from CHORIA_EXTERNAL_REQUEST file")
-	r.failIfError(json.Unmarshal(jreq, request), "could not parse request")
+	if r.failIfError(err, "could not read request from CHORIA_EXTERNAL_REQUEST file") {
+		return nil
+	}
+
+	if r.failIfError(json.Unmarshal(jreq, request), "could not parse request") {
+		return nil
+	}
 
 	if request.Action == "" {
-		r.failIfError(fmt.Errorf("invalid action"), "request failed")
+		if r.failIfError(fmt.Errorf("invalid action"), "request failed") {
+			return nil
+		}
 	}
 
 	action, ok := r.actions[request.Action]
-	if !ok {
-		r.failIfError(fmt.Errorf("unknown action %s", request.Action), "request failed")
+	if action == nil || !ok {
+		if r.fail("unknown action %s", request.Action) {
+			return nil
+		}
 	}
 
 	action(request, reply, r.config)
