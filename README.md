@@ -28,14 +28,14 @@ The most basic agent that receives a request, parses it and sends back a reply c
 package main
 
 import (
-	external "github.com/choria-io/go-external-agent"
+	"github.com/choria-io/go-external/agent"
 )
 
 type echoRequest struct {
 	Message string `json:"message"`
 }
 
-func echoAction(request *external.Request, reply *external.Reply, config map[string]string) {
+func echoAction(request *agent.Request, reply *agent.Reply, config map[string]string) {
 	req := &echoRequest{}
 
 	// parse the received request, sets appropriate errors on reply on failure
@@ -49,11 +49,11 @@ func echoAction(request *external.Request, reply *external.Reply, config map[str
 }
 
 func main() {
-	agent := external.NewAgent("parrot")
-	defer agent.ProcessRequest()
+	parrot := agent.NewAgent("parrot")
+	defer parrot.ProcessRequest()
 
 	// action will be invoked on demand
-	agent.MustRegisterAction("echo", echoAction)
+	parrot.MustRegisterAction("echo", echoAction)
 }
 ```
 
@@ -67,11 +67,11 @@ func shouldActivate(agent string, config map[string]string) (bool, error) {
     _, err := os.Stat("/etc/dependency.txt")
     if os.IsNotExist(err) {
         // logs as info level in the choria server log
-        external.Infof("The /etc/dependency.txt file could not be found")
+        agent.Infof("The /etc/dependency.txt file could not be found")
         return false, nil
     } else {
         // logs at error level in the choria server log
-        external.Errorf("Could not check if /etc/dependency.txt exist: %s", err)
+        agent.Errorf("Could not check if /etc/dependency.txt exist: %s", err)
         return false, err
     }
 
@@ -79,14 +79,15 @@ func shouldActivate(agent string, config map[string]string) (bool, error) {
 }
 
 func main() {
-	agent := external.NewAgent("parrot")
-	defer agent.ProcessRequest()
+	parrot := external.NewAgent("parrot")
+	defer parrot.ProcessRequest()
 
 	// shouldActivate will be called on agent startup
-	agent.RegisterActivator(shouldActivate)
-	agent.MustRegisterAction("echo", echoAction)
+	parrot.RegisterActivator(shouldActivate)
+	parrot.MustRegisterAction("echo", echoAction)
 }
 ```
+
 ### Configuration
 
 The action and activator both receive a config map, this is a parsed version of the contents of - for example - `/etc/choria/plugin.d/parrot.cfg`. 
