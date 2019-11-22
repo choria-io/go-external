@@ -1,3 +1,3 @@
-module github.com/choria-io/go-external-agent
+module github.com/choria-io/go-external
 
 go 1.13
