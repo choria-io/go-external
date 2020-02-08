@@ -30,3 +30,9 @@ type Reply struct {
 	Statusmsg  string      `json:"statusmsg"`
 	Data       interface{} `json:"data"`
 }
+
+// Abort sets the status code and message of the RPC reply
+func (r *Reply) Abort(c StatusCode, msg string) {
+	r.Statuscode = c
+	r.Statusmsg = msg
+}

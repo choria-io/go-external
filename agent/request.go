@@ -24,8 +24,7 @@ type Request struct {
 func (r *Request) ParseRequestData(target interface{}, reply *Reply) bool {
 	err := json.Unmarshal(r.Data, target)
 	if err != nil {
-		reply.Statuscode = InvalidData
-		reply.Statusmsg = fmt.Sprintf("Could not parse request data for %s#%s: %s", r.Agent, r.Action, err)
+		reply.Abort(InvalidData, fmt.Sprintf("Could not parse request data for %s#%s: %s", r.Agent, r.Action, err))
 		return false
 	}
 
