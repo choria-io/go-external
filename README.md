@@ -108,6 +108,12 @@ Choria needs 2 files that describe the features and behavior of the agent.  Thes
 
 You should fill in details as the wizard suggests, add 1 action - `echo` - and a `string` input and output called `message`.
 
+### Facts
+
+At the time of invoking your action the server will write a JSON file holding a snapshot of it's facts at the time. You can access this using `external.Facts()` or a path to the file in `external.FactsPath()`. This requires Choria Server version 0.14.0 or newer.
+
+Handling Random JSON data in Go is a bit complicated, I suggest a look at [gjson](https://github.com/tidwall/gjson) to dig into the data.
+
 ## Packaging
 
 Plugins can be [packaged and distributed on the forge](https://choria.io/docs/development/mcorpc/packaging/). Create a directory layout as below:

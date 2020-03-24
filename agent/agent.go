@@ -2,7 +2,9 @@ package agent
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"regexp"
 	"strings"
@@ -32,6 +34,26 @@ func NewAgent(name string) *Agent {
 	}
 
 	return a
+}
+
+// FactsPath returns the path to the node facts, empty string when not provided
+func FactsPath() string {
+	return os.Getenv("CHORIA_EXTERNAL_FACTS")
+}
+
+// Facts returns the server facts provided during invocation, empty JSON hash when not provided
+func Facts() (json.RawMessage, error) {
+	ff := os.Getenv("CHORIA_EXTERNAL_FACTS")
+	if ff == "" {
+		return []byte(`{}`), nil
+	}
+
+	fj, err := ioutil.ReadFile(ff)
+	if err != nil {
+		return []byte(`{}`), err
+	}
+
+	return fj, nil
 }
 
 // RegisterActivator registers a function used to check if the agent should be active,
@@ -72,7 +94,10 @@ func (a *Agent) ProcessRequest() {
 		a.processRPC()
 
 	default:
+		fmt.Println("This binary is a Plugin for the Choria Orchestrator and should only be called from within Choria")
+		fmt.Println()
 		fmt.Fprintf(os.Stderr, "Invalid protocol '%s'", protocol)
+
 		os.Exit(1)
 	}
 }

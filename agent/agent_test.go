@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"reflect"
 	"testing"
 )
 
@@ -14,6 +15,46 @@ func cleanEnv() {
 	os.Unsetenv("CHORIA_EXTERNAL_REQUEST")
 	os.Unsetenv("CHORIA_EXTERNAL_REPLY")
 	os.Unsetenv("CHORIA_EXTERNAL_PROTOCOL")
+	os.Unsetenv("CHORIA_EXTERNAL_FACTS")
+}
+
+func TestFacts(t *testing.T) {
+	defer cleanEnv()
+
+	if FactsPath() != "" {
+		t.Fatalf("expected empty facts path got %q", FactsPath())
+	}
+
+	f, err := Facts()
+	if err != nil {
+		t.Fatalf("expected unset CHORIA_EXTERNAL_FACTS to be ok, but got: %v", err)
+	}
+	if !reflect.DeepEqual(f, json.RawMessage(`{}`)) {
+		t.Fatalf("expected empty facts, got %q", f)
+	}
+
+	os.Setenv("CHORIA_EXTERNAL_FACTS", "testdata/facts.json")
+	if FactsPath() != "testdata/facts.json" {
+		t.Fatalf("expected testdata/facts.json facts path got %q", FactsPath())
+	}
+
+	f, err = Facts()
+	if err != nil {
+		t.Fatalf("expected unset CHORIA_EXTERNAL_FACTS to be ok, but got: %v", err)
+	}
+	if !reflect.DeepEqual(f, json.RawMessage("{\"ginkgo\": true}\n")) {
+		t.Fatalf("expected ginkgo facts, got %q", f)
+	}
+
+	os.Setenv("CHORIA_EXTERNAL_FACTS", "testdata/nonexisting")
+	f, err = Facts()
+	if err == nil {
+		t.Fatal("expected CHORIA_EXTERNAL_FACTS to non existing file to not be ok, but got no error")
+	}
+
+	if !reflect.DeepEqual(f, json.RawMessage("{}")) {
+		t.Fatalf("expected empty facts, got %q", f)
+	}
 }
 
 func TestNewAgentWithoutConfig(t *testing.T) {
