@@ -1,5 +1,9 @@
 package agent
 
+import (
+	"fmt"
+)
+
 // StatusCode is a reply status as defined by MCollective SimpleRPC - integers 0 to 5
 type StatusCode uint8
 
@@ -32,7 +36,7 @@ type Reply struct {
 }
 
 // Abort sets the status code and message of the RPC reply
-func (r *Reply) Abort(c StatusCode, msg string) {
+func (r *Reply) Abort(c StatusCode, format string, a ...interface{}) {
 	r.Statuscode = c
-	r.Statusmsg = msg
+	r.Statusmsg = fmt.Sprintf(format, a...)
 }
