@@ -71,7 +71,7 @@ func TestNewAgentWithoutConfig(t *testing.T) {
 	}
 
 	if len(a.actions) != 0 {
-		t.Error("ha actions when none were expected")
+		t.Error("has actions when none were expected")
 	}
 }
 

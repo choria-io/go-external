@@ -1,26 +1,62 @@
-## Golang External Agent Helper
+## Golang External Helper
 
-This is a library that can help you write a [Choria External Agent](https://choria.io/docs/development/mcorpc/externalagents/) in Go.
+This is a library that can help you write a [Choria External Agents](https://choria.io/docs/development/mcorpc/externalagents/) and Choria External Discovery sources in Go.
 
-External Agents are agents that live outside of the main Choria Server binary and so does not require recompiling the server to include it.
+External Agents and Discovery Sources are agents that live outside the main Choria Server binary and so does not require recompiling the server to include it.
 
-They are distributable over the Puppet Forge or any other method that can put files on disk.
+Agents are distributable over the Puppet Forge or any other method that can put files on disk.
 
 ## Status
 
-Today this library can be used to build standalone agents that you compile and deliver to your nodes, in the next version of Choria you will be able to deliver just the source for agents that rely only on Go stdlib and they will be compiled and run in place.
+Today this library can be used to build standalone agents and discovery that you compile and deliver to your nodes.
 
 It's a new library and a new feature in Choria, feedback and bug fixes appreciated.
 
 This is heavily inspired by the Python [py-mco-agent](https://github.com/optiz0r/py-mco-agent) written by Ben Roberts.
 
-## Example
+## Discovery
+
+We will write a basic discovery source that reads a JSON file and returns it as nodes. You should configure the path to the binary as:
+
+```ini
+plugin.choria.discovery.external.command = /path/to/discovery/command
+```
+
+```golang
+package main
+
+import (
+	"context"
+	"encoding/json"
+	"io/ioutil"
+	"time"
+
+	"github.com/choria-io/go-external/discovery"
+)
+
+func main() {
+	jsonDiscovery := discovery.NewDiscovery(func(ctx context.Context, timeout time.Duration, collective string, filter discovery.Filter) ([]string, error) {
+		f, _ := ioutil.ReadFile("/etc/choria/nodes.json")
+		nodes := []string{}
+		err := json.Unmarshal(f, &nodes)
+		
+		return nodes, err
+	})
+	
+	jsonDiscovery.ProcessRequest()
+}
+```
+
+The `ctx` supplied to your function is set to timeout when `timeout` is reached, `collective` is the targeted sub collective, filter` is a normal Choria filter.
+
+## Agents
+### Example
 
 We will write a basic agent called `parrot` that receives a message on its `echo` action and sends it back.
 
 This agent can be invoked from the CLI as `choria req parrot echo message="hello world!"` and likewise be callable from any other API client like playbooks, Ruby or Go.
 
-## Code
+### Code
 
 The most basic agent that receives a request, parses it and sends back a reply can be seen here.
 
@@ -57,7 +93,7 @@ func main() {
 }
 ```
 
-### Activation
+#### Activation
 
 In some cases your agent might have dependencies that the node need to satisfy before it can activate. Without an activator - like the above code - the agent will be active on any node.
 
@@ -88,7 +124,7 @@ func main() {
 }
 ```
 
-### Configuration
+#### Configuration
 
 The action and activator both receive a config map, this is a parsed version of the contents of - for example - `/etc/choria/plugin.d/parrot.cfg`. 
 
@@ -98,23 +134,23 @@ It's a simple file in the format:
 setting = value
 ```
 
-### Logging
+#### Logging
 
 The above example shows to logging examples, external agents can only log at level `info` and `error`. Any `STDOUT` output would be `info` level and `STDERR` output is logged as error.
 
-### DDL
+#### DDL
 
 Choria needs 2 files that describe the features and behavior of the agent.  These are called DDL files and can be generated using `choria tool generate ddl parrot.json parrot.ddl`.  This wizard will guide you though creating these files.
 
 You should fill in details as the wizard suggests, add 1 action - `echo` - and a `string` input and output called `message`.
 
-### Facts
+#### Facts
 
 At the time of invoking your action the server will write a JSON file holding a snapshot of it's facts at the time. You can access this using `external.Facts()` or a path to the file in `external.FactsPath()`. This requires Choria Server version 0.14.0 or newer.
 
 Handling Random JSON data in Go is a bit complicated, I suggest a look at [gjson](https://github.com/tidwall/gjson) to dig into the data.
 
-## Packaging
+### Packaging
 
 Plugins can be [packaged and distributed on the forge](https://choria.io/docs/development/mcorpc/packaging/). Create a directory layout as below:
 
