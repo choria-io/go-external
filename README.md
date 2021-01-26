@@ -35,7 +35,7 @@ import (
 )
 
 func main() {
-	jsonDiscovery := discovery.NewDiscovery(func(ctx context.Context, timeout time.Duration, collective string, filter discovery.Filter) ([]string, error) {
+	jsonDiscovery := discovery.NewDiscovery(func(ctx context.Context, timeout time.Duration, collective string, filter discovery.Filter, opts map[string]string) ([]string, error) {
 		f, _ := ioutil.ReadFile("/etc/choria/nodes.json")
 		nodes := []string{}
 		err := json.Unmarshal(f, &nodes)
@@ -47,7 +47,7 @@ func main() {
 }
 ```
 
-The `ctx` supplied to your function is set to timeout when `timeout` is reached, `collective` is the targeted sub collective, filter` is a normal Choria filter.
+The `ctx` supplied to your function is set to timeout when `timeout` is reached, `collective` is the targeted sub collective, `filter` is a normal Choria filter. Finally, options are options read from the CLI as `--do`.
 
 ## Agents
 ### Example

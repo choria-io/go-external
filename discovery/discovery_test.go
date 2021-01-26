@@ -70,6 +70,7 @@ func newRequest() Request {
 		Protocol:   RequestProtocol,
 		Timeout:    2,
 		Collective: "mcollective",
+		Options:    map[string]string{"dummy": "option"},
 		Filter: &Filter{
 			Fact:     []FactFilter{},
 			Class:    []string{"development"},
@@ -83,7 +84,7 @@ func newRequest() Request {
 func TestDiscover(t *testing.T) {
 	cleanEnv()
 
-	d := NewDiscovery(func(ctx context.Context, timeout time.Duration, collective string, filter Filter) ([]string, error) {
+	d := NewDiscovery(func(ctx context.Context, timeout time.Duration, collective string, filter Filter, opt map[string]string) ([]string, error) {
 		return nil, fmt.Errorf("not implemented")
 	})
 
@@ -98,7 +99,11 @@ func TestDiscover(t *testing.T) {
 		t.Fatalf("expected error got none")
 	}
 
-	d = NewDiscovery(func(ctx context.Context, timeout time.Duration, collective string, filter Filter) ([]string, error) {
+	d = NewDiscovery(func(ctx context.Context, timeout time.Duration, collective string, filter Filter, opt map[string]string) ([]string, error) {
+		if opt["dummy"] != "option" {
+			return nil, fmt.Errorf("invalid option given")
+		}
+
 		if collective != "mcollective" {
 			return nil, fmt.Errorf("invalid collective")
 		}

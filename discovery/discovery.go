@@ -10,7 +10,7 @@ import (
 )
 
 // DiscoverFunc implements aan external query interface
-type DiscoverFunc func(ctx context.Context, timeout time.Duration, collective string, filter Filter) ([]string, error)
+type DiscoverFunc func(ctx context.Context, timeout time.Duration, collective string, filter Filter, options map[string]string) ([]string, error)
 
 // FactFilter is how a fact match is represented to the Filter
 type FactFilter struct {
@@ -37,10 +37,11 @@ type Response struct {
 
 // Request is the request sent to the external script on its STDIN
 type Request struct {
-	Protocol   string  `json:"protocol"`
-	Timeout    float64 `json:"timeout"`
-	Collective string  `json:"collective"`
-	Filter     *Filter `json:"filter"`
+	Protocol   string            `json:"protocol"`
+	Options    map[string]string `json:"options"`
+	Timeout    float64           `json:"timeout"`
+	Collective string            `json:"collective"`
+	Filter     *Filter           `json:"filter"`
 }
 
 const (
@@ -81,7 +82,7 @@ func (d *Discovery) processRequest() (*Response, error) {
 	timeoutCtx, cancel := context.WithTimeout(context.Background(), time.Duration(req.Timeout)*time.Second)
 	defer cancel()
 
-	nodes, err := d.f(timeoutCtx, to, req.Collective, *req.Filter)
+	nodes, err := d.f(timeoutCtx, to, req.Collective, *req.Filter, req.Options)
 	if err != nil {
 		return nil, err
 	}
