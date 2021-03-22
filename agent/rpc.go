@@ -34,9 +34,9 @@ func (r *rpc) panicIfError(err error, format string, a ...interface{}) {
 
 func (r *rpc) fail(format string, a ...interface{}) bool {
 	reply := &Reply{
-		Statuscode: Aborted,
-		Statusmsg:  fmt.Sprintf(format, a...),
-		Data:       make(map[string]interface{}),
+		StatusCode:    Aborted,
+		StatusMessage: fmt.Sprintf(format, a...),
+		Data:          make(map[string]interface{}),
 	}
 
 	err := r.publishReply(reply)
