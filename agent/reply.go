@@ -30,13 +30,31 @@ const (
 // Reply is the reply data as stipulated by MCollective RPC system.  The Data
 // has to be something that can be turned into JSON using the normal Marshal system
 type Reply struct {
-	Statuscode StatusCode  `json:"statuscode"`
-	Statusmsg  string      `json:"statusmsg"`
-	Data       interface{} `json:"data"`
+	StatusCode    StatusCode  `json:"statuscode"`
+	StatusMessage string      `json:"statusmsg"`
+	Data          interface{} `json:"data"`
+}
+
+// InvalidData sets an InvalidData status code and message of the RPC reply
+func (r *Reply) InvalidData(format string, a ...interface{}) {
+	r.StatusCode = InvalidData
+	r.StatusMessage = fmt.Sprintf(format, a...)
 }
 
 // Abort sets the status code and message of the RPC reply
-func (r *Reply) Abort(c StatusCode, format string, a ...interface{}) {
-	r.Statuscode = c
-	r.Statusmsg = fmt.Sprintf(format, a...)
+func (r *Reply) Abort(format string, a ...interface{}) {
+	r.StatusCode = Aborted
+	r.StatusMessage = fmt.Sprintf(format, a...)
+}
+
+// AbortIfErr sets the Aborted status code and message if err is not nil, returns true if err was not nil
+func (r *Reply) AbortIfErr(err error, format string, a ...interface{}) bool {
+	if err == nil {
+		return false
+	}
+
+	r.StatusCode = Aborted
+	r.StatusMessage = fmt.Sprintf(format, a...)
+
+	return true
 }

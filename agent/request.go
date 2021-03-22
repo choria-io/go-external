@@ -2,7 +2,6 @@ package agent
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 // Request is the request being published to the shim runner
@@ -24,7 +23,7 @@ type Request struct {
 func (r *Request) ParseRequestData(target interface{}, reply *Reply) bool {
 	err := json.Unmarshal(r.Data, target)
 	if err != nil {
-		reply.Abort(InvalidData, fmt.Sprintf("Could not parse request data for %s#%s: %s", r.Agent, r.Action, err))
+		reply.InvalidData("Could not parse request data for %s#%s: %s", r.Agent, r.Action, err)
 		return false
 	}
 
