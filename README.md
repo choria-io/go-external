@@ -140,7 +140,7 @@ The above example shows to logging examples, external agents can only log at lev
 
 #### DDL
 
-Choria needs 2 files that describe the features and behavior of the agent.  These are called DDL files and can be generated using `choria tool generate ddl parrot.json parrot.ddl`.  This wizard will guide you though creating these files.
+Choria needs 2 files that describe the features and behavior of the agent.  These are called DDL files and can be generated using `choria plugin generate ddl parrot.json parrot.ddl`.  This wizard will guide you though creating these files.
 
 You should fill in details as the wizard suggests, add 1 action - `echo` - and a `string` input and output called `message`.
 
