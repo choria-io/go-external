@@ -53,11 +53,6 @@ func (r *rpc) failIfError(err error, format string, a ...interface{}) bool {
 	return r.fail(format, a...)
 }
 
-func (r *rpc) hasAction(action string) bool {
-	_, ok := r.actions[action]
-	return ok
-}
-
 func (r *rpc) handleRequest() error {
 	request := &Request{}
 	reply := &Reply{}
