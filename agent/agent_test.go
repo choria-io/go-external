@@ -3,7 +3,6 @@ package agent
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"path/filepath"
 	"reflect"
@@ -82,7 +81,7 @@ func TestNewAgentWithConfig(t *testing.T) {
 	a := NewAgent("testing")
 
 	if len(a.config) != 1 {
-		t.Error("expected 1 config item got a different ammount")
+		t.Error("expected 1 config item got a different amount")
 	}
 
 	if a.config["foo"] != "bar" {
@@ -132,7 +131,7 @@ func TestProcessRequestActivation(t *testing.T) {
 
 	agent.ProcessRequest()
 
-	rj, err := ioutil.ReadFile(os.Getenv("CHORIA_EXTERNAL_REPLY"))
+	rj, err := os.ReadFile(os.Getenv("CHORIA_EXTERNAL_REPLY"))
 	if err != nil {
 		t.Error("reading reply failed")
 	}
@@ -178,7 +177,7 @@ func TestProcessRequestRPC(t *testing.T) {
 
 	agent.ProcessRequest()
 
-	rj, err := ioutil.ReadFile(os.Getenv("CHORIA_EXTERNAL_REPLY"))
+	rj, err := os.ReadFile(os.Getenv("CHORIA_EXTERNAL_REPLY"))
 	if err != nil {
 		t.Error("reading reply failed")
 	}

@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"reflect"
 	"testing"
@@ -20,7 +19,7 @@ func cleanEnv() {
 func setupExecution(t *testing.T, req Request) (*os.File, *os.File) {
 	t.Helper()
 
-	reqfile, err := ioutil.TempFile("", "request")
+	reqfile, err := os.CreateTemp("", "request")
 	if err != nil {
 		t.Fatalf("could not create request temp file: %s", err)
 	}
@@ -35,7 +34,7 @@ func setupExecution(t *testing.T, req Request) (*os.File, *os.File) {
 	}
 	reqfile.Close()
 
-	repfile, err := ioutil.TempFile("", "reply")
+	repfile, err := os.CreateTemp("", "reply")
 	if err != nil {
 		t.Fatalf("could not create reply temp file: %s", err)
 	}
@@ -51,7 +50,7 @@ func setupExecution(t *testing.T, req Request) (*os.File, *os.File) {
 func readResponse(t *testing.T, f string) *Response {
 	t.Helper()
 
-	rj, err := ioutil.ReadFile(f)
+	rj, err := os.ReadFile(f)
 	if err != nil {
 		t.Fatalf("could not read reply: %s", err)
 	}
@@ -118,7 +117,7 @@ func TestDiscover(t *testing.T) {
 	d.ProcessRequest()
 	reply = readResponse(t, repfile.Name())
 	if reply.Protocol != ResponseProtocol {
-		t.Fatalf("incorrect reponse protocol, wanted %q, got %q", ResponseProtocol, reply.Protocol)
+		t.Fatalf("incorrect response protocol, wanted %q, got %q", ResponseProtocol, reply.Protocol)
 	}
 
 	if reply.Error != "" {

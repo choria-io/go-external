@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"time"
 )
@@ -67,7 +66,7 @@ func (d *Discovery) processRequest() (*Response, error) {
 		return nil, fmt.Errorf("no discovery implementation function specified")
 	}
 
-	rj, err := ioutil.ReadFile(os.Getenv("CHORIA_EXTERNAL_REQUEST"))
+	rj, err := os.ReadFile(os.Getenv("CHORIA_EXTERNAL_REQUEST"))
 	if err != nil {
 		return nil, fmt.Errorf("could not read request from CHORIA_EXTERNAL_REQUEST file")
 	}
@@ -116,7 +115,7 @@ func (d *Discovery) ProcessRequest() {
 			panic(fmt.Errorf("could not read reply file from CHORIA_EXTERNAL_REPLY: %s", err))
 		}
 
-		err = ioutil.WriteFile(os.Getenv("CHORIA_EXTERNAL_REPLY"), rj, stat.Mode())
+		err = os.WriteFile(os.Getenv("CHORIA_EXTERNAL_REPLY"), rj, stat.Mode())
 		if err != nil {
 			panic(fmt.Errorf("could not write reply file from CHORIA_EXTERNAL_REPLY: %s", err))
 		}

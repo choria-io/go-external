@@ -3,7 +3,6 @@ package agent
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
@@ -57,7 +56,7 @@ func (r *rpc) handleRequest() error {
 	request := &Request{}
 	reply := &Reply{}
 
-	jreq, err := ioutil.ReadFile(os.Getenv("CHORIA_EXTERNAL_REQUEST"))
+	jreq, err := os.ReadFile(os.Getenv("CHORIA_EXTERNAL_REQUEST"))
 	if r.failIfError(err, "could not read request from CHORIA_EXTERNAL_REQUEST file") {
 		return nil
 	}
