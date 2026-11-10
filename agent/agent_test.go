@@ -82,7 +82,7 @@ func TestNewAgentWithConfig(t *testing.T) {
 	a := NewAgent("testing")
 
 	if len(a.config) != 1 {
-		t.Error("expected 1 config item got a different ammount")
+		t.Error("expected 1 config item got a different amount")
 	}
 
 	if a.config["foo"] != "bar" {

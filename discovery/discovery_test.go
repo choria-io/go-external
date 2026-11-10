@@ -118,7 +118,7 @@ func TestDiscover(t *testing.T) {
 	d.ProcessRequest()
 	reply = readResponse(t, repfile.Name())
 	if reply.Protocol != ResponseProtocol {
-		t.Fatalf("incorrect reponse protocol, wanted %q, got %q", ResponseProtocol, reply.Protocol)
+		t.Fatalf("incorrect response protocol, wanted %q, got %q", ResponseProtocol, reply.Protocol)
 	}
 
 	if reply.Error != "" {
