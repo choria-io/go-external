@@ -4,7 +4,6 @@ import (
 	"bufio"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 	"regexp"
 	"strings"
@@ -48,7 +47,7 @@ func Facts() (json.RawMessage, error) {
 		return []byte(`{}`), nil
 	}
 
-	fj, err := ioutil.ReadFile(ff)
+	fj, err := os.ReadFile(ff)
 	if err != nil {
 		return []byte(`{}`), err
 	}

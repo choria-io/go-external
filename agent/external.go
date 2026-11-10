@@ -3,7 +3,6 @@ package agent
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"os"
 )
 
@@ -46,7 +45,7 @@ func (e externalAgent) loadRequest(protocol string, req interface{}) error {
 		return fmt.Errorf("request file '%s' from CHORIA_EXTERNAL_REQUEST does not exist", reqfile)
 	}
 
-	reqj, err := ioutil.ReadFile(reqfile)
+	reqj, err := os.ReadFile(reqfile)
 	if err != nil {
 		return fmt.Errorf("could not load request: %s", err)
 	}
